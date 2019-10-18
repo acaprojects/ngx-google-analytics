@@ -29,17 +29,19 @@ export class GoogleAnalyticsService {
     private timers: { [name: string]: number } = {};
 
     constructor(private title: Title) {
-        (function(i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            (i[r] =
-                i[r] ||
-                function() { (i[r].q = i[r].q || []).push(arguments); }), (i[r].l = 1 * (new Date() as any));
-            (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m);
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-        log('Service', 'Injected Google Analytics into page');
+        if (!window.ga) {
+            (function(i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                (i[r] =
+                    i[r] ||
+                    function() { (i[r].q = i[r].q || []).push(arguments); }), (i[r].l = 1 * (new Date() as any));
+                (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m);
+            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+            log('Service', 'Injected Google Analytics into page');
+        }
         this.service = window.ga;
     }
 
@@ -50,6 +52,7 @@ export class GoogleAnalyticsService {
     public load(tracking_id: string) {
         if (!this.enabled) { throw new Error('Google Analytics needs to be enabled before being initialised') }
         if (!this.service) { throw new Error('Google Analytics hasn\'t been installed on this page'); }
+        log('Service', `Setup with tracking ID: ${tracking_id}`);
         this.service('create', tracking_id, 'auto');
         this.service('send', 'pageview');
     }

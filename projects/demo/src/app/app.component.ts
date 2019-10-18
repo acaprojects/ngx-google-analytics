@@ -10,6 +10,9 @@ import { GoogleAnalyticsService } from 'projects/library/src/lib/google-analytic
 })
 export class AppComponent {
 
-    constructor(private analytics: GoogleAnalyticsService) { }
+    constructor(private analytics: GoogleAnalyticsService) {
+        this.analytics.enabled = true;
+        this.analytics.load('');
+    }
 
 }
